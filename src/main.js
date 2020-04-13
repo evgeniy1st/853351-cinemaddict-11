@@ -68,3 +68,4 @@ mainContainerFilms.addEventListener(`click`, function (evt) {
     closePopupBtn.addEventListener(`click`, closeBtnClickHandler);
   }
 });
+
