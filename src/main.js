@@ -9,10 +9,12 @@ import {createFilmsListContainer} from "./components/films-list-container";
 import {createShowMoreButton} from "./components/show-more-button";
 import {createFilmCard} from "./components/film-card";
 import {createFilmDetails} from "./components/film-details";
+import {createFooterStatistics} from "./components/footer-statistics";
+import {getFilms} from "./mocks/film-card";
+import {QUANTITY_FILM_EXTRA} from "./constants";
+import {QUANTITY_FILM_CARDS} from "./constants";
 
-
-const QUANTITY_FILM_CARDS = 5;
-const QUANTITY_FILM_EXTRA = 2;
+const films = getFilms();
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -42,19 +44,38 @@ render(sectionFilmList, createShowMoreButton(), `beforeend`);
 
 const filmsListContainer = sectionFilmList.querySelector(`.films-list__container`);
 
-for (let i = 0; i < QUANTITY_FILM_CARDS; i++) {
-  render(filmsListContainer, createFilmCard(), `beforeend`);
-}
+const filmsforStart = films.slice();
+filmsforStart.slice(0, QUANTITY_FILM_CARDS).forEach((it) => {
+  render(filmsListContainer, createFilmCard(it), `beforeend`);
+});
 
-for (let i = 0; i < sectionsFilmListExtra.length; i++) {
-  render(sectionsFilmListExtra[i], createFilmsListContainer(), `beforeend`);
+render(sectionsFilmListExtra[0], createFilmsListContainer(), `beforeend`);
 
-  let filmsListContainerExtra = sectionsFilmListExtra[i].querySelector(`.films-list__container`);
+let filmsListContainerExtra = sectionsFilmListExtra[0].querySelector(`.films-list__container`);
 
-  for (let j = 0; j < QUANTITY_FILM_EXTRA; j++) {
-    render(filmsListContainerExtra, createFilmCard(), `beforeend`);
-  }
-}
+films.slice().sort((a, b) => {
+  return parseFloat(b.rating) - parseFloat(a.rating);
+})
+.slice(0, QUANTITY_FILM_EXTRA)
+.forEach((it) => {
+  render(filmsListContainerExtra, createFilmCard(it), `beforeend`);
+});
+
+render(sectionsFilmListExtra[1], createFilmsListContainer(), `beforeend`);
+
+filmsListContainerExtra = sectionsFilmListExtra[1].querySelector(`.films-list__container`);
+
+films.slice().sort((a, b) => {
+  return parseFloat(b.comments.length) - parseFloat(a.comments.length);
+})
+  .slice(0, QUANTITY_FILM_EXTRA)
+  .forEach((it) => {
+    render(filmsListContainerExtra, createFilmCard(it), `beforeend`);
+  });
+
+const footerStatistics = document.querySelector(`.footer__statistics`);
+
+render(footerStatistics, createFooterStatistics(films.length), `beforeend`);
 
 mainContainerFilms.addEventListener(`click`, function (evt) {
   if (evt.target.parentElement.classList.contains(`film-card`)) {
