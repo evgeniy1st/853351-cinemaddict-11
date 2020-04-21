@@ -1,12 +1,12 @@
 export const createFilmCard = (obj) => {
   return (
-    `<article class="film-card">
+    `<article class="film-card" data-index="${obj.index}">
       <h3 class="film-card__title">${obj.title}</h3>
       <p class="film-card__rating">${obj.rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${obj.year}</span>
         <span class="film-card__duration">${obj.duration}</span>
-        <span class="film-card__genre">${obj.genre}</span>
+        <span class="film-card__genre">${obj.genres[0]}</span>
       </p>
       <img src="./images/posters/${obj.poster}" alt="${obj.poster}" class="film-card__poster">
       <p class="film-card__description">${obj.description.length >= 140 ? obj.description.slice(0, 138) + `...` : obj.description}</p>

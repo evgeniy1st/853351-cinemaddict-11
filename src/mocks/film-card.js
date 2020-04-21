@@ -2,8 +2,10 @@ import {getRandomInt} from "../utils";
 import {getRandomFloat} from "../utils";
 import {MAX_QUANTITY_COMMENTS} from "../constants";
 import {QUANTITY_FILMS} from "../constants";
+import {MAX_AGE_LIMIT} from "../constants";
+import {MIN_AGE_LIMIT} from "../constants";
 
-const titlesList = [`Mabel Perkins`, `Luella Nguyen`, `Steve Doyle`, `Matilda Valdez`, `Chris Patterson`, `Bertie McGee`, `Lucile Barnes`, `Francisco Cummings`, `Fanny Thornton`, `Jeff Bishop`, `Celia Hanson`, `Myrtie Page`, `Jeremy Osborne`, `Irene Garrett`, `Franklin Washington`, `Josie Drake`, `Troy Olson`, `Ernest Wood`, `Devin Rowe`, `Peter Ryan`, `Maurice Flowers`, `Georgie Weaver`, `Randy Hughes`, `Ethel Walters`, `Dollie Vaughn`, `Lucile Morgan`, `Brent Townsend`, `Leona Goodwin`, `Eliza Vaughn`, `Brett Swanson`, `Katharine Garza`];
+const titlesList = [`Mabel Perkins`, `Luella Nguyen`, `Steve Doyle`, `Matilda Valdez`, `Chris Patterson`, `Bertie McGee`, `Lucile Barnes`, `Francisco Cummings`, `Fanny Thornton`, `Jeff Bishop`, `Celia Hanson`, `Myrtie Page`, `Jeremy Osborne`, `Irene Garrett`, `Franklin Washington`, `Josie Drake`, `Troy Olson`, `Ernest Wood`, `Devin Rowe`, `Peter Ryan`, `Maurice Flowers`, `Georgie Weaver`, `Randy Hughes`, `Ethel Walters`, `Dollie Vaughn`, `Lucile Morgan`, `Brent Townsend`, `Leona Goodwin`, `Eliza Vaughn`, `Brett Swanson`, `Katharine Garza`, `Francisco Drake`, `Carolyn Steele`, `Roy Miller`, `Amelia Torres`, `Floyd Steele`, `Pearl Webster`, `Sarah Lynch`, `Katie Banks`, `Herman Rhodes`, `Bernard Hernandez`, `Eric Quinn`, `Nathaniel Watson`, `Landon Byrd`, `Charlie Hale`, `Roger Elliott`, `Amelia Tyler`, `Chester Howell`, `Tyler Watts`, `Myrtie Gardner`, `Stanley Collins`, `Lillie Wells`, `Elmer Burton`, `Mattie Lee`, `Alan Kelly`, `Steve Sanchez`, `Mike Lucas`, `Violet Santiago`, `Sue Walker`, `Emma Frank`, `Calvin Henderson`, `Ora Tran`, `Alta Meyer`];
 
 
 const genresList = [`musical`, `comedy`, `thriller`, `drama`, `horror`, `melodrama`, `parody`, `detective`, `adventure`, `western`];
@@ -14,7 +16,9 @@ const descriptions = [`Duis adipisicing velit magna aute ex est. Ullamco excepte
 
 const commentsList = [`Culpa velit duis eu Lorem ipsum reprehenderit sunt cupidatat labore deserunt tempor voluptate consequat`, `Minim aliquip nulla magna anim dolor nulla`, `Aliqua occaecat sit sunt laborum`, `Id nisi sint qui ad officia`, `Consequat anim aliqua irure in`, `Laboris id et do eiusmod enim anim esse anim`, `Non dolor nulla consectetur velit magna nostrud nostrud est id occaecat ut`, `Id tempor culpa duis minim ea`, `Ad cupidatat commodo voluptate eiusmod sint et`, `Eu nulla exercitation Lorem in cupidatat duis nisi ex fugiat aliquip ad occaecat sunt`, `Veniam nostrud labore do exercitation esse esse irure anim`, `Quis magna veniam culpa tempor labore labore labore`, `Aliquip eu et adipisicing laboris nisi proident laborum mollit eu ex laborum in exercitation`, `Deserunt cupidatat do aliquip ut nulla sunt laborum eiusmod eiusmod excepteur`, `Id excepteur ea mollit do veniam ullamco magna`, `Non consequat nisi ad elit aute excepteur ut sunt`, `Ipsum esse incididunt labore labore nulla duis`, `Non exercitation elit id officia incididunt veniam Lorem duis anim aute`, `Sunt non voluptate id enim fugiat veniam sit incididunt fugiat ea`, `Consectetur nisi anim duis et elit Lorem ea officia nulla laborum anim eu nisi`, `Veniam occaecat ex eu tempor sunt adipisicing`, `Sunt et officia nulla eu incididunt culpa cupidatat consequat esse id nulla velit cillum`, `Ex cillum cillum excepteur magna`, `Ipsum nostrud eiusmod officia Lorem ullamco`, `Veniam id nisi ea aliqua`, `Aute minim proident tempor velit`];
 
-const emotionsLists = [`angry.png`, `puke.png`, `sleeping.png`, `smile.png`];
+const emotionsLists = [`angry`, `puke`, `sleeping`, `smile`];
+
+const countriesList = [`Russia`, `USA`, `UK`, `China`, `Japan`, `Canada`, `France`, `Germany`, `Австралия`, `India`, `USSR`, `Poland`];
 
 const getDate = () => {
   let date = new Date(getRandomInt(2018, 2020), getRandomInt(0, 11), getRandomInt(1, 30), getRandomInt(0, 23), getRandomInt(0, 59));
@@ -39,25 +43,70 @@ const getComments = (count) => {
   }
   return comments;
 };
-const generateFilmInfo = () => {
+const generateFilmInfo = (count) => {
   const film = {
     title: titlesList[getRandomInt(0, titlesList.length - 1)],
+    get originalTitle() {
+      return (
+        `Real ${this.title}. Original`
+      );
+    },
     rating: getRandomFloat(1, 10).toFixed(1),
     year: getRandomInt(1940, 2020),
+    get fullDate() {
+      let date = new Date(this.year, getRandomInt(0, 11), getRandomInt(0, 30));
+
+      return date.toLocaleDateString(`defualt`, {year: `numeric`, month: `long`, day: `numeric`});
+    },
     duration: `${getRandomInt(1, 2)}h ${getRandomInt(0, 59)}m`,
-    genre: genresList[getRandomInt(0, genresList.length - 1)],
+    get genres() {
+      let tempGenresList = [];
+      let qntGenres = getRandomInt(1, 4);
+      for (let i = 0; i < qntGenres; i++) {
+        tempGenresList.push(genresList[getRandomInt(0, genresList.length - 1)]);
+      }
+
+      return tempGenresList;
+    },
     poster: postersList[getRandomInt(0, postersList.length - 1)],
     description: descriptions[getRandomInt(0, descriptions.length - 1)],
-    comments: getComments(getRandomInt(1, MAX_QUANTITY_COMMENTS))
+    comments: getComments(getRandomInt(1, MAX_QUANTITY_COMMENTS)),
+    director: titlesList[getRandomInt(0, titlesList.length - 1)],
+    get writers() {
+      let writersList = [];
+      let qntWriters = getRandomInt(1, 4);
+      for (let i = 0; i < qntWriters; i++) {
+        writersList.push(titlesList[getRandomInt(0, titlesList.length - 1)]);
+      }
+
+      return writersList;
+    },
+    get actors() {
+      let actorsList = [];
+      let qntActors = getRandomInt(2, 6);
+      for (let i = 0; i < qntActors; i++) {
+        actorsList.push(titlesList[getRandomInt(0, titlesList.length - 1)]);
+      }
+
+      return actorsList;
+    },
+    isWatchlist: Math.random() > 0.5,
+    isHistory: Math.random() > 0.5,
+    isFavorite: Math.random() > 0.5,
+    ageLimit: `${getRandomInt(MIN_AGE_LIMIT, MAX_AGE_LIMIT)}+`,
+    country: countriesList[getRandomInt(0, countriesList.length - 1)],
+    index: count
   };
   return film;
 };
 
 export const getFilms = () => {
   const films = [];
+  let count = 0;
 
   while (films.length < QUANTITY_FILMS) {
-    films.push(generateFilmInfo());
+    films.push(generateFilmInfo(count));
+    count++;
   }
 
   return films;
