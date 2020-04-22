@@ -21,9 +21,12 @@ const emotionsLists = [`angry`, `puke`, `sleeping`, `smile`];
 const countriesList = [`Russia`, `USA`, `UK`, `China`, `Japan`, `Canada`, `France`, `Germany`, `Австралия`, `India`, `USSR`, `Poland`];
 
 const getDate = () => {
-  let date = new Date(getRandomInt(2018, 2020), getRandomInt(0, 11), getRandomInt(1, 30), getRandomInt(0, 23), getRandomInt(0, 59));
+  let minDate = new Date(`2018`);
+  let maxDate = new Date(`2020-04-21`);
+  let randomDate = new Date(getRandomInt(minDate.getTime(), maxDate.getTime()));
+
   return (
-    `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}`
+    `${randomDate.getFullYear()}/${randomDate.getMonth()}/${randomDate.getDate()}  ${randomDate.getHours()}:${randomDate.getMinutes()}`
   );
 };
 
@@ -34,10 +37,7 @@ const getComments = (count) => {
       text: commentsList[getRandomInt(0, commentsList.length - 1)],
       emotion: emotionsLists[getRandomInt(0, emotionsLists.length - 1)],
       author: titlesList[getRandomInt(0, titlesList.length - 1)],
-      date: getDate(),
-      deletle() {
-        return;
-      }
+      date: getDate()
     };
     comments.push(currentComment);
   }
