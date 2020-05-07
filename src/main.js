@@ -1,15 +1,16 @@
-import UserRank from "./components/user-rank";
-import Navigation from "./components/navigation";
-import Sorting from "./components/sorting";
-import MainContainerFilms from "./components/main-container-films";
-import SectionFilmsList from "./components/section-films-list";
-import TopRated from "./components/top-rated";
-import MostCommented from "./components/most-commented";
-import FilmsListContainer from "./components/films-list-container";
-import ShowMoreButton from "./components/show-more-button";
-import FilmCard from "./components/film-card";
+import Comment from "./components/comments";
 import FilmDetails from "./components/film-details";
+import FilmCard from "./components/film-card";
+import FilmsListContainer from "./components/films-list-container";
 import FooterStatistics from "./components/footer-statistics";
+import MainContainerFilms from "./components/main-container-films";
+import MostCommented from "./components/most-commented";
+import Navigation from "./components/navigation";
+import SectionFilmsList from "./components/section-films-list";
+import ShowMoreButton from "./components/show-more-button";
+import Sorting from "./components/sorting";
+import TopRated from "./components/top-rated";
+import UserRank from "./components/user-rank";
 import {getFilms} from "./mocks/film-card";
 import {QUANTITY_FILM_EXTRA} from "./constants";
 import {QUANTITY_FILM_CARDS} from "./constants";
@@ -54,6 +55,10 @@ let filmsListForDecreasing = films.slice();
 
 const renderOneCard = (film, container) => {
   const popup = new FilmDetails(film).getElement();
+  const commentsContainer = popup.querySelector(`.film-details__comments-list`);
+  film.comments.forEach((it) => {
+    commentsContainer.appendChild(new Comment(it).getElement());
+  });
   const filmCard = new FilmCard(film).getElement();
 
   filmCard.addEventListener(`click`, function () {

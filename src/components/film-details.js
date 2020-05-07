@@ -1,4 +1,3 @@
-import {getComments} from "../mocks/comments";
 import {createElement} from "../utils";
 
 const createFilmDetails = (obj) => {
@@ -85,8 +84,6 @@ const createFilmDetails = (obj) => {
             <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${obj.comments.length}</span></h3>
 
             <ul class="film-details__comments-list">
-
-              ${getComments(obj.comments)}
             </ul>
 
             <div class="film-details__new-comment">
