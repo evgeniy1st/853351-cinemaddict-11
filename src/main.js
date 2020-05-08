@@ -120,54 +120,50 @@ const watchlistButton = main.querySelector(`[href="#watchlist"]`);
 const historyButton = main.querySelector(`[href="#history"]`);
 const favoritesButton = main.querySelector(`[href="#favorites"]`);
 
-defaultButton.addEventListener(`click`, (evt) => {
+const applyFilter = (evt, button, filter) => {
   evt.preventDefault();
   main.querySelectorAll(`.main-navigation__item`).forEach((it) => {
     it.classList.remove(`main-navigation__item--active`);
   });
-  defaultButton.classList.add(`main-navigation__item--active`);
-  filmsListForDecreasing = films.slice();
+  button.classList.add(`main-navigation__item--active`);
+
+  switch (filter) {
+    case `isWatchlist`:
+      filmsListForDecreasing = films.slice().filter((it) => {
+        return it.isWatchlist === true;
+      });
+      break;
+    case `isHistory`:
+      filmsListForDecreasing = films.slice().filter((it) => {
+        return it.isHistory === true;
+      });
+      break;
+    case `isFavorite`:
+      filmsListForDecreasing = films.slice().filter((it) => {
+        return it.isFavorite === true;
+      });
+      break;
+    default:
+      filmsListForDecreasing = films.slice();
+  }
 
   renderStartFilmCards();
+};
+
+defaultButton.addEventListener(`click`, (evt) => {
+  applyFilter(evt, defaultButton);
 });
 
 watchlistButton.addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-  main.querySelectorAll(`.main-navigation__item`).forEach((it) => {
-    it.classList.remove(`main-navigation__item--active`);
-  });
-  watchlistButton.classList.add(`main-navigation__item--active`);
-  filmsListForDecreasing = films.slice().filter((it) => {
-    return it.isWatchlist === true;
-  });
-
-  renderStartFilmCards();
+  applyFilter(evt, watchlistButton, `isWatchlist`);
 });
 
 historyButton.addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-  main.querySelectorAll(`.main-navigation__item`).forEach((it) => {
-    it.classList.remove(`main-navigation__item--active`);
-  });
-  historyButton.classList.add(`main-navigation__item--active`);
-  filmsListForDecreasing = films.slice().filter((it) => {
-    return it.isHistory === true;
-  });
-
-  renderStartFilmCards();
+  applyFilter(evt, historyButton, `isHistory`);
 });
 
 favoritesButton.addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-  main.querySelectorAll(`.main-navigation__item`).forEach((it) => {
-    it.classList.remove(`main-navigation__item--active`);
-  });
-  favoritesButton.classList.add(`main-navigation__item--active`);
-  filmsListForDecreasing = films.slice().filter((it) => {
-    return it.isFavorite === true;
-  });
-
-  renderStartFilmCards();
+  applyFilter(evt, favoritesButton, `isFavorite`);
 });
 
 render(sectionsFilmListExtra[0], new FilmsListContainer().getElement(), renderPosition.BEFOREEND);
