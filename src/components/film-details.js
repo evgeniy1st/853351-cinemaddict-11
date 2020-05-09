@@ -1,6 +1,6 @@
-import {getComments} from "./comments";
+import {createElement} from "../utils";
 
-export const createFilmDetails = (obj) => {
+const createFilmDetails = (obj) => {
   return (
     `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -84,8 +84,6 @@ export const createFilmDetails = (obj) => {
             <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${obj.comments.length}</span></h3>
 
             <ul class="film-details__comments-list">
-
-              ${getComments(obj.comments)}
             </ul>
 
             <div class="film-details__new-comment">
@@ -123,3 +121,27 @@ export const createFilmDetails = (obj) => {
     </section>`
   );
 };
+
+export default class FilmDetails {
+  constructor(obj) {
+    this._film = obj;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetails(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

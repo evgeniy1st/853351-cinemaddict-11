@@ -1,4 +1,6 @@
-export const createNavigation = (watchlist, history, favorites) => {
+import {createElement} from "../utils";
+
+const createNavigation = (watchlist, history, favorites) => {
   return (
     `<nav class="main-navigation">
       <div class="main-navigation__items">
@@ -11,3 +13,29 @@ export const createNavigation = (watchlist, history, favorites) => {
     </nav>`
   );
 };
+
+export default class Navigation {
+  constructor(watchlist, history, favorites) {
+    this._watchlist = watchlist;
+    this._history = history;
+    this._favorites = favorites;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createNavigation(this._watchlist, this._history, this._favorites);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
