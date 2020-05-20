@@ -8,7 +8,7 @@ const createSectionFilmsList = () => {
   );
 };
 
-export default class SectionFilmsList {
+export default class SectionFilmsList extends AbstractComponent {
   getTemplate() {
     return createSectionFilmsList();
   }
