@@ -15,7 +15,7 @@ import UserRank from "./components/user-rank";
 import {getFilms} from "./mocks/film-card";
 import {QUANTITY_FILM_EXTRA} from "./constants";
 import {QUANTITY_FILM_CARDS} from "./constants";
-import {render, renderPosition} from "./utils";
+import {render, renderPosition} from "./utils/render";
 
 const films = getFilms();
 
