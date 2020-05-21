@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component";
 
 const createFilmCard = (obj) => {
   const description = obj.description.length >= 140 ? obj.description.slice(0, 138) + `...` : obj.description;
@@ -23,26 +23,13 @@ const createFilmCard = (obj) => {
   );
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractComponent {
   constructor(obj) {
+    super();
     this._film = obj;
-
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCard(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
