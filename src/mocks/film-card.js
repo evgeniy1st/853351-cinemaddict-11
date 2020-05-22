@@ -1,5 +1,5 @@
-import {getRandomInt} from "../utils/utils";
-import {getRandomFloat} from "../utils/utils";
+import {getRandomInt} from "../utils/common";
+import {getRandomFloat} from "../utils/common";
 import {MAX_QUANTITY_COMMENTS} from "../constants";
 import {QUANTITY_FILMS} from "../constants";
 import {MAX_AGE_LIMIT} from "../constants";
