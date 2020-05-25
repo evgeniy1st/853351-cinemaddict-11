@@ -1,21 +1,16 @@
-import Comment from "./components/comments";
-import FilmDetails from "./components/film-details";
-import FilmCard from "./components/film-card";
 import FilmsListContainer from "./components/films-list-container";
 import FooterStatistics from "./components/footer-statistics";
 import MainContainerFilms from "./components/main-container-films";
 import MostCommented from "./components/most-commented";
 import Navigation from "./components/navigation";
-import NoFilms from "./components/no-films";
+import PageController from "./controllers/page-controller";
 import SectionFilmsList from "./components/section-films-list";
-import ShowMoreButton from "./components/show-more-button";
 import Sorting from "./components/sorting";
 import TopRated from "./components/top-rated";
 import UserRank from "./components/user-rank";
 import {getFilms} from "./mocks/film-card";
 import {QUANTITY_FILM_EXTRA} from "./constants";
-import {QUANTITY_FILM_CARDS} from "./constants";
-import {render, renderPosition, remove} from "./utils/render";
+import {render, renderPosition} from "./utils/render";
 
 const films = getFilms();
 
@@ -44,80 +39,11 @@ render(mainContainerFilms, new SectionFilmsList(), renderPosition.BEFOREEND);
 
 const sectionFilmsList = mainContainerFilms.querySelector(`.films-list`);
 
-render(sectionFilmsList, new FilmsListContainer(), renderPosition.BEFOREEND);
-
-
-const filmsListContainer = sectionFilmsList.querySelector(`.films-list__container`);
-
 let filmsListForDecreasing = films.slice();
 
-const renderOneCard = (film, container) => {
-  // TODO решить вопрос перехода на функцию рендеринга, работающую с компонентами
-  const popup = new FilmDetails(film).getElement();
-  const commentsContainer = popup.querySelector(`.film-details__comments-list`);
-  film.comments.forEach((it) => {
-    commentsContainer.appendChild(new Comment(it).getElement());
-  });
-  const filmCard = new FilmCard(film);
 
-  filmCard.setClickHandler(() => {
-    body.appendChild(popup);
-
-    const closePopupBtn = popup.querySelector(`.film-details__close-btn`);
-    const closePopup = () => {
-      body.removeChild(popup);
-    };
-    const onClosePopupBtnClick = () => {
-      closePopup();
-      closePopupBtn.removeEventListener(`click`, onClosePopupBtnClick);
-      document.removeEventListener(`keydown`, onDocumentKeydown);
-    };
-
-    closePopupBtn.addEventListener(`click`, onClosePopupBtnClick);
-    const onDocumentKeydown = (evt) => {
-      if (evt.keyCode === 27) {
-        closePopup();
-        document.removeEventListener(`keydown`, onDocumentKeydown);
-        closePopupBtn.removeEventListener(`click`, onClosePopupBtnClick);
-      }
-    };
-    document.addEventListener(`keydown`, onDocumentKeydown);
-  });
-  render(container, filmCard, renderPosition.BEFOREEND);
-};
-
-const renderFilmCards = (arr) => {
-  arr.splice(0, QUANTITY_FILM_CARDS).forEach((it) => {
-    renderOneCard(it, filmsListContainer);
-  });
-};
-
-const renderStartFilmCards = () => {
-  if (films.length === 0) {
-    render(filmsListContainer, new NoFilms(), renderPosition.BEFOREEND);
-    return;
-  }
-  filmsListContainer.innerHTML = ``;
-  renderFilmCards(filmsListForDecreasing);
-
-  if (sectionFilmsList.querySelector(`.films-list__show-more`)) {
-    sectionFilmsList.querySelector(`.films-list__show-more`).remove();
-  }
-
-  const showMoreButton = new ShowMoreButton();
-
-  render(sectionFilmsList, showMoreButton, renderPosition.BEFOREEND);
-
-  showMoreButton.setClickHandler(() => {
-    renderFilmCards(filmsListForDecreasing);
-    if (filmsListForDecreasing.length <= 0) {
-      remove(showMoreButton);
-      showMoreButton.removeElement();
-    }
-  });
-};
-
-renderStartFilmCards();
+const pageController = new PageController(sectionFilmsList);
+pageController.renderMainContent(filmsListForDecreasing);
 
 const defaultButton = main.querySelector(`[href="#all"]`);
 const watchlistButton = main.querySelector(`[href="#watchlist"]`);
@@ -151,7 +77,7 @@ const applyFilter = (evt, button, filter) => {
       filmsListForDecreasing = films.slice();
   }
 
-  renderStartFilmCards();
+  pageController.renderMainContent(filmsListForDecreasing);
 };
 
 defaultButton.addEventListener(`click`, (evt) => {
@@ -184,7 +110,7 @@ if (films.length > 0) {
   })
     .slice(0, QUANTITY_FILM_EXTRA)
     .forEach((it) => {
-      renderOneCard(it, filmsListContainerExtra);
+      pageController.renderOneCard(it, filmsListContainerExtra);
     });
 
   render(sectionsFilmListExtra[1], new FilmsListContainer(), renderPosition.BEFOREEND);
@@ -196,7 +122,7 @@ if (films.length > 0) {
   })
     .slice(0, QUANTITY_FILM_EXTRA)
     .forEach((it) => {
-      renderOneCard(it, filmsListContainerExtra);
+      pageController.renderOneCard(it, filmsListContainerExtra);
     });
 }
 
