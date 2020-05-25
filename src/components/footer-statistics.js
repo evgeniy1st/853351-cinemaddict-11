@@ -1,15 +1,15 @@
 import AbstractComponent from "./abstract-component";
 
-const createFooterStatistics = (qnt) => {
+const createFooterStatistics = (quantity) => {
   return (
-    `<p>${qnt} movies inside</p>`
+    `<p>${quantity} movies inside</p>`
   );
 };
 
 export default class FooterStatistics extends AbstractComponent {
-  constructor(qnt) {
+  constructor(quantity) {
     super();
-    this._statistics = qnt;
+    this._statistics = quantity;
   }
 
   getTemplate() {
