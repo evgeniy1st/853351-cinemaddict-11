@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component";
 
 const createMainContainerFilms = () => {
   return (
@@ -8,24 +8,8 @@ const createMainContainerFilms = () => {
 };
 
 
-export default class MainContainerFilms {
-  constructor() {
-    this._element = null;
-  }
-
+export default class MainContainerFilms extends AbstractComponent {
   getTemplate() {
     return createMainContainerFilms();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -3,14 +3,6 @@ export const renderPosition = {
   BEFOREEND: `beforeend`
 };
 
-export const getRandomInt = function (min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-export const getRandomFloat = function (min, max) {
-  return Math.random() * (max - min) + min;
-};
-
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
@@ -18,13 +10,18 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export const render = (container, element, place) => {
+export const render = (container, component, place) => {
   switch (place) {
     case renderPosition.AFTERBEGIN:
-      container.prepend(element);
+      container.prepend(component.getElement());
       break;
     case renderPosition.BEFOREEND:
-      container.append(element);
+      container.append(component.getElement());
       break;
   }
+};
+
+export const remove = (component) => {
+  component.getElement().remove();
+  component.removeElement();
 };
