@@ -18,18 +18,18 @@ const body = document.querySelector(`body`);
 const header = body.querySelector(`.header`);
 const main = body.querySelector(`.main`);
 
-let qntWatchlist = films.slice().filter((it) => {
+let quantityWatchlist = films.slice().filter((it) => {
   return it.isWatchlist === true;
 }).length;
-let qntHistory = films.slice().filter((it) => {
+let quantityHistory = films.slice().filter((it) => {
   return it.isHistory === true;
 }).length;
-let qntFavorites = films.slice().filter((it) => {
+let quantityFavorites = films.slice().filter((it) => {
   return it.isFavorite === true;
 }).length;
 
 render(header, new UserRank(), renderPosition.BEFOREEND);
-render(main, new Navigation(qntWatchlist, qntHistory, qntFavorites), renderPosition.BEFOREEND);
+render(main, new Navigation(quantityWatchlist, quantityHistory, quantityFavorites), renderPosition.BEFOREEND);
 render(main, new Sorting(), renderPosition.BEFOREEND);
 render(main, new MainContainerFilms(), renderPosition.BEFOREEND);
 

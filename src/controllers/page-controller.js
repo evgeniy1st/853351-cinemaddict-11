@@ -49,19 +49,19 @@ export default class PageController {
     render(container, filmCard, renderPosition.BEFOREEND);
   }
 
-  renderFilmCards(arr) {
-    arr.splice(0, QUANTITY_FILM_CARDS).forEach((it) => {
+  renderFilmCards(films) {
+    films.splice(0, QUANTITY_FILM_CARDS).forEach((it) => {
       this.renderOneCard(it, filmsListContainer.getElement());
     });
   }
 
-  renderStartFilmCards(arr, container) {
-    if (arr.length === 0) {
+  renderStartFilmCards(films, container) {
+    if (films.length === 0) {
       render(filmsListContainer.getElement(), new NoFilms(), renderPosition.BEFOREEND);
       return;
     }
     filmsListContainer.getElement().innerHTML = ``;
-    this.renderFilmCards(arr);
+    this.renderFilmCards(films);
 
     if (container.querySelector(`.films-list__show-more`)) {
       container.querySelector(`.films-list__show-more`).remove();
@@ -72,16 +72,16 @@ export default class PageController {
     render(container, showMoreButton, renderPosition.BEFOREEND);
 
     showMoreButton.setClickHandler(() => {
-      this.renderFilmCards(arr);
-      if (arr.length <= 0) {
+      this.renderFilmCards(films);
+      if (films.length <= 0) {
         remove(showMoreButton);
         showMoreButton.removeElement();
       }
     });
   }
 
-  renderMainContent(arr) {
+  renderMainContent(films) {
     render(this.container, filmsListContainer, renderPosition.BEFOREEND);
-    this.renderStartFilmCards(arr, this.container);
+    this.renderStartFilmCards(films, this.container);
   }
 }

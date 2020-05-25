@@ -61,8 +61,8 @@ const generateFilmInfo = (count) => {
     duration: `${getRandomInt(1, 2)}h ${getRandomInt(0, 59)}m`,
     get genres() {
       let tempGenresList = [];
-      let qntGenres = getRandomInt(1, 4);
-      for (let i = 0; i < qntGenres; i++) {
+      let quantityGenres = getRandomInt(1, 4);
+      for (let i = 0; i < quantityGenres; i++) {
         tempGenresList.push(genresList[getRandomInt(0, genresList.length - 1)]);
       }
 
@@ -74,8 +74,8 @@ const generateFilmInfo = (count) => {
     director: titlesList[getRandomInt(0, titlesList.length - 1)],
     get writers() {
       let writersList = [];
-      let qntWriters = getRandomInt(1, 4);
-      for (let i = 0; i < qntWriters; i++) {
+      let quantityWriters = getRandomInt(1, 4);
+      for (let i = 0; i < quantityWriters; i++) {
         writersList.push(titlesList[getRandomInt(0, titlesList.length - 1)]);
       }
 
@@ -83,8 +83,8 @@ const generateFilmInfo = (count) => {
     },
     get actors() {
       let actorsList = [];
-      let qntActors = getRandomInt(2, 6);
-      for (let i = 0; i < qntActors; i++) {
+      let quantityActors = getRandomInt(2, 6);
+      for (let i = 0; i < quantityActors; i++) {
         actorsList.push(titlesList[getRandomInt(0, titlesList.length - 1)]);
       }
 
