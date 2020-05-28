@@ -5,7 +5,6 @@ import MostCommented from "./components/most-commented";
 import Navigation from "./components/navigation";
 import PageController from "./controllers/page-controller";
 import SectionFilmsList from "./components/section-films-list";
-import Sorting from "./components/sorting";
 import TopRated from "./components/top-rated";
 import UserRank from "./components/user-rank";
 import {getFilms} from "./mocks/film-card";
@@ -30,7 +29,6 @@ let quantityFavorites = films.slice().filter((it) => {
 
 render(header, new UserRank(), renderPosition.BEFOREEND);
 render(main, new Navigation(quantityWatchlist, quantityHistory, quantityFavorites), renderPosition.BEFOREEND);
-render(main, new Sorting(), renderPosition.BEFOREEND);
 render(main, new MainContainerFilms(), renderPosition.BEFOREEND);
 
 const mainContainerFilms = main.querySelector(`.films`);

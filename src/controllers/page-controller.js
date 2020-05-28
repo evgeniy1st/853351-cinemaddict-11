@@ -5,6 +5,7 @@ import FilmDetails from "../components/film-details";
 import NoFilms from "../components/no-films";
 import {render, renderPosition, remove} from "../utils/render";
 import ShowMoreButton from "../components/show-more-button";
+import Sorting, {SortType} from "../components/sorting";
 import {QUANTITY_FILM_CARDS} from "../constants";
 
 const body = document.querySelector(`body`);
@@ -13,6 +14,8 @@ const filmsListContainer = new FilmsListContainer();
 export default class PageController {
   constructor(container) {
     this.container = container;
+    this._sorting = new Sorting();
+    this._filmCount = 0;
   }
 
   renderOneCard(film, container) {
@@ -50,22 +53,40 @@ export default class PageController {
   }
 
   renderFilmCards(films) {
-    films.splice(0, QUANTITY_FILM_CARDS).forEach((it) => {
+    films.slice(this._filmCount, this._filmCount + QUANTITY_FILM_CARDS).forEach((it) => {
       this.renderOneCard(it, filmsListContainer.getElement());
     });
+    this._filmCount += QUANTITY_FILM_CARDS;
   }
 
   renderStartFilmCards(films, container) {
+    this._filmCount = 0;
     if (films.length === 0) {
       render(filmsListContainer.getElement(), new NoFilms(), renderPosition.BEFOREEND);
       return;
     }
     filmsListContainer.getElement().innerHTML = ``;
     this.renderFilmCards(films);
+    render(container, this._sorting, renderPosition.AFTERBEGIN);
 
     if (container.querySelector(`.films-list__show-more`)) {
       container.querySelector(`.films-list__show-more`).remove();
     }
+
+    this._sorting.setSortTypeChangeHandler((sortType) => {
+      switch (sortType) {
+        case SortType.DATE:
+          this.renderMainContent(films.slice().sort((a, b) => a.year - b.year));
+          break;
+
+        case SortType.RATING:
+          this.renderMainContent(films.slice().sort((a, b) => a.rating - b.rating));
+          break;
+
+        default:
+          this.renderMainContent(films);
+      }
+    });
 
     const showMoreButton = new ShowMoreButton();
 
@@ -73,7 +94,7 @@ export default class PageController {
 
     showMoreButton.setClickHandler(() => {
       this.renderFilmCards(films);
-      if (films.length <= 0) {
+      if (films.length <= this._filmCount) {
         remove(showMoreButton);
         showMoreButton.removeElement();
       }
