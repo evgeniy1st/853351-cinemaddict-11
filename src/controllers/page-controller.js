@@ -7,15 +7,30 @@ import {render, renderPosition, remove} from "../utils/render";
 import ShowMoreButton from "../components/show-more-button";
 import Sorting, {SortType} from "../components/sorting";
 import {QUANTITY_FILM_CARDS} from "../constants";
+import Navigation, {FilterType} from "../components/navigation";
 
 const body = document.querySelector(`body`);
 const filmsListContainer = new FilmsListContainer();
 
 export default class PageController {
-  constructor(container) {
+  constructor(container, films) {
+    this._films = films;
     this.container = container;
     this._sorting = new Sorting();
+    this._quantityWatchlist = films.slice().filter((it) => {
+      return it.isWatchlist === true;
+    }).length;
+    this._quantityHistory = films.slice().filter((it) => {
+      return it.isHistory === true;
+    }).length;
+    this._quantityFavorites = films.slice().filter((it) => {
+      return it.isFavorite === true;
+    }).length;
+    this._navigation = new Navigation(this._quantityWatchlist, this._quantityHistory, this._quantityFavorites);
     this._filmCount = 0;
+    this._currentFilter = FilterType.ALL;
+    this._currentSort = SortType.DEFAULT;
+    this._filmsListForDecreasing = films.slice();
   }
 
   renderOneCard(film, container) {
@@ -68,24 +83,20 @@ export default class PageController {
     filmsListContainer.getElement().innerHTML = ``;
     this.renderFilmCards(films);
     render(container, this._sorting, renderPosition.AFTERBEGIN);
+    render(container, this._navigation, renderPosition.AFTERBEGIN);
 
     if (container.querySelector(`.films-list__show-more`)) {
       container.querySelector(`.films-list__show-more`).remove();
     }
 
     this._sorting.setSortTypeChangeHandler((sortType) => {
-      switch (sortType) {
-        case SortType.DATE:
-          this.renderMainContent(films.slice().sort((a, b) => a.year - b.year));
-          break;
+      this._currentSort = sortType;
+      this.renderMainContent();
+    });
 
-        case SortType.RATING:
-          this.renderMainContent(films.slice().sort((a, b) => a.rating - b.rating));
-          break;
-
-        default:
-          this.renderMainContent(films);
-      }
+    this._navigation.setFilterTypeChangeHandler((filterType) => {
+      this._currentFilter = filterType;
+      this.renderMainContent();
     });
 
     const showMoreButton = new ShowMoreButton();
@@ -93,7 +104,7 @@ export default class PageController {
     render(container, showMoreButton, renderPosition.BEFOREEND);
 
     showMoreButton.setClickHandler(() => {
-      this.renderFilmCards(films);
+      this.renderFilmCards(this._filmsListForDecreasing);
       if (films.length <= this._filmCount) {
         remove(showMoreButton);
         showMoreButton.removeElement();
@@ -101,8 +112,56 @@ export default class PageController {
     });
   }
 
-  renderMainContent(films) {
+  renderMainContent() {
+    switch (`${this._currentFilter} ${this._currentSort}`) {
+      case `${FilterType.WATCHLIST} ${SortType.DATE}`:
+        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isWatchlist === true).sort((a, b) => a.year - b.year);
+        break;
+
+      case `${FilterType.WATCHLIST} ${SortType.RATING}`:
+        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isWatchlist === true).sort((a, b) => a.rating - b.rating);
+        break;
+
+      case `${FilterType.WATCHLIST} ${SortType.DEFAULT}`:
+        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isWatchlist === true);
+        break;
+
+      case `${FilterType.HISTORY} ${SortType.DATE}`:
+        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isHistory === true).sort((a, b) => a.year - b.year);
+        break;
+
+      case `${FilterType.HISTORY} ${SortType.RATING}`:
+        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isHistory === true).sort((a, b) => a.rating - b.rating);
+        break;
+
+      case `${FilterType.HISTORY} ${SortType.DEFAULT}`:
+        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isHistory === true);
+        break;
+
+      case `${FilterType.FAVORITES} ${SortType.DATE}`:
+        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isFavorite === true).sort((a, b) => a.year - b.year);
+        break;
+
+      case `${FilterType.FAVORITES} ${SortType.RATING}`:
+        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isFavorite === true).sort((a, b) => a.rating - b.rating);
+        break;
+
+      case `${FilterType.FAVORITES} ${SortType.DEFAULT}`:
+        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isFavorite === true);
+        break;
+
+      case `${FilterType.ALL} ${SortType.DATE}`:
+        this._filmsListForDecreasing = this._films.slice().sort((a, b) => a.year - b.year);
+        break;
+
+      case `${FilterType.ALL} ${SortType.RATING}`:
+        this._filmsListForDecreasing = this._films.slice().sort((a, b) => a.rating - b.rating);
+        break;
+
+      default:
+        this._filmsListForDecreasing = this._films.slice();
+    }
     render(this.container, filmsListContainer, renderPosition.BEFOREEND);
-    this.renderStartFilmCards(films, this.container);
+    this.renderStartFilmCards(this._filmsListForDecreasing, this.container);
   }
 }
