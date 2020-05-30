@@ -112,55 +112,44 @@ export default class PageController {
     });
   }
 
-  renderMainContent() {
-    switch (`${this._currentFilter} ${this._currentSort}`) {
-      case `${FilterType.WATCHLIST} ${SortType.DATE}`:
-        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isWatchlist === true).sort((a, b) => a.year - b.year);
-        break;
+  returnInitialState() {
+    this._filmsListForDecreasing = this._films.slice();
+  }
 
-      case `${FilterType.WATCHLIST} ${SortType.RATING}`:
-        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isWatchlist === true).sort((a, b) => a.rating - b.rating);
+  applyFilter() {
+    switch (`${this._currentFilter}`) {
+      case `${FilterType.WATCHLIST}`:
+        this._filmsListForDecreasing.filter((it) => it.isWatchlist === true);
         break;
-
-      case `${FilterType.WATCHLIST} ${SortType.DEFAULT}`:
-        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isWatchlist === true);
+      case `${FilterType.HISTORY}`:
+        this._filmsListForDecreasing.filter((it) => it.isHistory === true);
         break;
-
-      case `${FilterType.HISTORY} ${SortType.DATE}`:
-        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isHistory === true).sort((a, b) => a.year - b.year);
+      case `${FilterType.FAVORITES}`:
+        this._filmsListForDecreasing.filter((it) => it.isFavorite === true);
         break;
-
-      case `${FilterType.HISTORY} ${SortType.RATING}`:
-        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isHistory === true).sort((a, b) => a.rating - b.rating);
-        break;
-
-      case `${FilterType.HISTORY} ${SortType.DEFAULT}`:
-        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isHistory === true);
-        break;
-
-      case `${FilterType.FAVORITES} ${SortType.DATE}`:
-        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isFavorite === true).sort((a, b) => a.year - b.year);
-        break;
-
-      case `${FilterType.FAVORITES} ${SortType.RATING}`:
-        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isFavorite === true).sort((a, b) => a.rating - b.rating);
-        break;
-
-      case `${FilterType.FAVORITES} ${SortType.DEFAULT}`:
-        this._filmsListForDecreasing = this._films.slice().filter((it) => it.isFavorite === true);
-        break;
-
-      case `${FilterType.ALL} ${SortType.DATE}`:
-        this._filmsListForDecreasing = this._films.slice().sort((a, b) => a.year - b.year);
-        break;
-
-      case `${FilterType.ALL} ${SortType.RATING}`:
-        this._filmsListForDecreasing = this._films.slice().sort((a, b) => a.rating - b.rating);
-        break;
-
       default:
-        this._filmsListForDecreasing = this._films.slice();
+        return;
     }
+    console.log(`${this._currentFilter}`);
+  }
+
+  applySort() {
+    switch (`${this._currentSort}`) {
+      case `${SortType.DATE}`:
+        this._filmsListForDecreasing.sort((a, b) => a.year - b.year);
+        break;
+      case `${SortType.RATING}`:
+        this._filmsListForDecreasing.sort((a, b) => a.rating - b.rating);
+        break;
+      default:
+        return;
+    }
+  }
+
+  renderMainContent() {
+    this.returnInitialState();
+    this.applyFilter();
+    this.applySort();
     render(this.container, filmsListContainer, renderPosition.BEFOREEND);
     this.renderStartFilmCards(this._filmsListForDecreasing, this.container);
   }
