@@ -119,18 +119,17 @@ export default class PageController {
   applyFilter() {
     switch (`${this._currentFilter}`) {
       case `${FilterType.WATCHLIST}`:
-        this._filmsListForDecreasing.filter((it) => it.isWatchlist === true);
+        this._filmsListForDecreasing = this._filmsListForDecreasing.filter((it) => it.isWatchlist === true);
         break;
       case `${FilterType.HISTORY}`:
-        this._filmsListForDecreasing.filter((it) => it.isHistory === true);
+        this._filmsListForDecreasing = this._filmsListForDecreasing.filter((it) => it.isHistory === true);
         break;
       case `${FilterType.FAVORITES}`:
-        this._filmsListForDecreasing.filter((it) => it.isFavorite === true);
+        this._filmsListForDecreasing = this._filmsListForDecreasing.filter((it) => it.isFavorite === true);
         break;
       default:
         return;
     }
-    console.log(`${this._currentFilter}`);
   }
 
   applySort() {
