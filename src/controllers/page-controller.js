@@ -1,7 +1,5 @@
-import Comment from "../components/comments";
 import FilmsListContainer from "../components/films-list-container";
-import FilmCard from "../components/film-card";
-import FilmDetails from "../components/film-details";
+import FilmController from "./film-controller";
 import NoFilms from "../components/no-films";
 import {render, renderPosition, remove} from "../utils/render";
 import ShowMoreButton from "../components/show-more-button";
@@ -9,13 +7,12 @@ import Sorting, {SortType} from "../components/sorting";
 import {QUANTITY_FILM_CARDS} from "../constants";
 import Navigation, {FilterType} from "../components/navigation";
 
-const body = document.querySelector(`body`);
 const filmsListContainer = new FilmsListContainer();
 
 export default class PageController {
   constructor(container, films) {
     this._films = films;
-    this.container = container;
+    this._container = container;
     this._sorting = new Sorting();
     this._quantityWatchlist = films.slice().filter((it) => {
       return it.isWatchlist === true;
@@ -34,37 +31,8 @@ export default class PageController {
   }
 
   renderOneCard(film, container) {
-    const popup = new FilmDetails(film).getElement();
-    const commentsContainer = popup.querySelector(`.film-details__comments-list`);
-    film.comments.forEach((it) => {
-      commentsContainer.appendChild(new Comment(it).getElement());
-    });
-    const filmCard = new FilmCard(film);
-
-    filmCard.setClickHandler(() => {
-      body.appendChild(popup);
-
-      const closePopupBtn = popup.querySelector(`.film-details__close-btn`);
-      const closePopup = () => {
-        body.removeChild(popup);
-      };
-      const onClosePopupBtnClick = () => {
-        closePopup();
-        closePopupBtn.removeEventListener(`click`, onClosePopupBtnClick);
-        document.removeEventListener(`keydown`, onDocumentKeydown);
-      };
-
-      closePopupBtn.addEventListener(`click`, onClosePopupBtnClick);
-      const onDocumentKeydown = (evt) => {
-        if (evt.keyCode === 27) {
-          closePopup();
-          document.removeEventListener(`keydown`, onDocumentKeydown);
-          closePopupBtn.removeEventListener(`click`, onClosePopupBtnClick);
-        }
-      };
-      document.addEventListener(`keydown`, onDocumentKeydown);
-    });
-    render(container, filmCard, renderPosition.BEFOREEND);
+    const filmController = new FilmController(container);
+    filmController.renderFilm(film);
   }
 
   renderFilmCards(films) {
@@ -149,7 +117,7 @@ export default class PageController {
     this.returnInitialState();
     this.applyFilter();
     this.applySort();
-    render(this.container, filmsListContainer, renderPosition.BEFOREEND);
-    this.renderStartFilmCards(this._filmsListForDecreasing, this.container);
+    render(this._container, filmsListContainer, renderPosition.BEFOREEND);
+    this.renderStartFilmCards(this._filmsListForDecreasing, this._container);
   }
 }
