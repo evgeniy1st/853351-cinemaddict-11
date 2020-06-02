@@ -6,24 +6,45 @@ import {render, renderPosition} from "../utils/render";
 const body = document.querySelector(`body`);
 
 export default class FilmController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._filmComponent = null;
+    this._popup = null;
+    this._onDataChange = onDataChange;
   }
 
   renderFilm(film) {
-    const popup = new FilmDetails(film).getElement();
-    const commentsContainer = popup.querySelector(`.film-details__comments-list`);
+    this._popup = new FilmDetails(film).getElement();
+    const commentsContainer = this._popup.querySelector(`.film-details__comments-list`);
     film.comments.forEach((it) => {
       commentsContainer.appendChild(new Comment(it).getElement());
     });
-    const filmCard = new FilmCard(film);
+    this._filmComponent = new FilmCard(film);
 
-    filmCard.setClickHandler(() => {
-      body.appendChild(popup);
+    this._filmComponent.setWatchlistButtonClickHandler((evt) => {
+      this._onDataChange(evt, this, film, Object.assign({}, film, {
+        isWatchlist: !film.isWatchlist
+      }));
+    });
 
-      const closePopupBtn = popup.querySelector(`.film-details__close-btn`);
+    this._filmComponent.setHistoryButtonClickHandler((evt) => {
+      this._onDataChange(evt, this, film, Object.assign({}, film, {
+        isHistory: !film.isHistory
+      }));
+    });
+
+    this._filmComponent.setFavoritesButtonClickHandler((evt) => {
+      this._onDataChange(evt, this, film, Object.assign({}, film, {
+        isFavorite: !film.isFavorite
+      }));
+    });
+
+    this._filmComponent.setClickHandler(() => {
+      body.appendChild(this._popup);
+
+      const closePopupBtn = this._popup.querySelector(`.film-details__close-btn`);
       const closePopup = () => {
-        body.removeChild(popup);
+        body.removeChild(this._popup);
       };
       const onClosePopupBtnClick = () => {
         closePopup();
@@ -41,6 +62,7 @@ export default class FilmController {
       };
       document.addEventListener(`keydown`, onDocumentKeydown);
     });
-    render(this._container, filmCard, renderPosition.BEFOREEND);
+
+    render(this._container, this._filmComponent, renderPosition.BEFOREEND);
   }
 }

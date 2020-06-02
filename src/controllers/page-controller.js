@@ -7,10 +7,20 @@ import Sorting, {SortType} from "../components/sorting";
 import {QUANTITY_FILM_CARDS} from "../constants";
 import Navigation, {FilterType} from "../components/navigation";
 
-const filmsListContainer = new FilmsListContainer();
+const renderFilms = (container, films, onDataChange) => {
+  return films.map((film) => {
+    const filmController = new FilmController(container, onDataChange);
+
+    filmController.renderFilm(film);
+
+    return filmController;
+  });
+};
 
 export default class PageController {
   constructor(container, films) {
+    this._filmsListContainer = new FilmsListContainer();
+    this._showingFilmCount = QUANTITY_FILM_CARDS;
     this._films = films;
     this._container = container;
     this._sorting = new Sorting();
@@ -28,27 +38,36 @@ export default class PageController {
     this._currentFilter = FilterType.ALL;
     this._currentSort = SortType.DEFAULT;
     this._filmsListForDecreasing = films.slice();
+    this._onDataChange = this.onDataChange.bind(this);
   }
 
-  renderOneCard(film, container) {
-    const filmController = new FilmController(container);
-    filmController.renderFilm(film);
+  onDataChange(evt, filmController, oldData, newData) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    const index = this._films.findIndex((it) => it === oldData);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
+
+    filmController.renderFilm(this._films[index]);
   }
 
   renderFilmCards(films) {
-    films.slice(this._filmCount, this._filmCount + QUANTITY_FILM_CARDS).forEach((it) => {
-      this.renderOneCard(it, filmsListContainer.getElement());
-    });
+    let currentFilms = films.slice(this._filmCount, this._filmCount + QUANTITY_FILM_CARDS);
+    renderFilms(this._filmsListContainer.getElement(), currentFilms, this._onDataChange);
     this._filmCount += QUANTITY_FILM_CARDS;
   }
 
   renderStartFilmCards(films, container) {
     this._filmCount = 0;
     if (films.length === 0) {
-      render(filmsListContainer.getElement(), new NoFilms(), renderPosition.BEFOREEND);
+      render(this._filmsListContainer.getElement(), new NoFilms(), renderPosition.BEFOREEND);
       return;
     }
-    filmsListContainer.getElement().innerHTML = ``;
+    this._filmsListContainer.getElement().innerHTML = ``;
     this.renderFilmCards(films);
     render(container, this._sorting, renderPosition.AFTERBEGIN);
     render(container, this._navigation, renderPosition.AFTERBEGIN);
@@ -103,10 +122,10 @@ export default class PageController {
   applySort() {
     switch (`${this._currentSort}`) {
       case `${SortType.DATE}`:
-        this._filmsListForDecreasing.sort((a, b) => a.year - b.year);
+        this._filmsListForDecreasing.sort((a, b) => b.year - a.year);
         break;
       case `${SortType.RATING}`:
-        this._filmsListForDecreasing.sort((a, b) => a.rating - b.rating);
+        this._filmsListForDecreasing.sort((a, b) => b.rating - a.rating);
         break;
       default:
         return;
@@ -117,7 +136,7 @@ export default class PageController {
     this.returnInitialState();
     this.applyFilter();
     this.applySort();
-    render(this._container, filmsListContainer, renderPosition.BEFOREEND);
+    render(this._container, this._filmsListContainer, renderPosition.BEFOREEND);
     this.renderStartFilmCards(this._filmsListForDecreasing, this._container);
   }
 }
