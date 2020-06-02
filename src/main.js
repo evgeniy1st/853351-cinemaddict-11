@@ -13,7 +13,7 @@ import FilmController from "./controllers/film-controller";
 
 const films = getFilms();
 
-const simple = `просто`;
+const hard = `непросто`;
 
 
 const body = document.querySelector(`body`);
