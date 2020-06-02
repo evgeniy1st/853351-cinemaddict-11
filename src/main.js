@@ -13,6 +13,9 @@ import FilmController from "./controllers/film-controller";
 
 const films = getFilms();
 
+const simple = `просто`;
+
+
 const body = document.querySelector(`body`);
 const header = body.querySelector(`.header`);
 const main = body.querySelector(`.main`);
