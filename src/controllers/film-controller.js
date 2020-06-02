@@ -14,12 +14,25 @@ export default class FilmController {
   }
 
   renderFilm(film) {
-    this._popup = new FilmDetails(film).getElement();
+    this._filmDetails = new FilmDetails(film);
+    this._popup = this._filmDetails.getElement();
     const commentsContainer = this._popup.querySelector(`.film-details__comments-list`);
     film.comments.forEach((it) => {
       commentsContainer.appendChild(new Comment(it).getElement());
     });
     this._filmComponent = new FilmCard(film);
+
+    this._filmDetails.setWatchlistButtonClickHandler(() => {
+      film.isWatchlist = !film.isWatchlist;
+    });
+
+    this._filmDetails.setHistoryButtonClickHandler(() => {
+      film.isHistory = !film.isHistory;
+    });
+
+    this._filmDetails.setFavoritesButtonClickHandler(() => {
+      film.isFavorite = !film.isFavorite;
+    });
 
     this._filmComponent.setWatchlistButtonClickHandler((evt) => {
       this._onDataChange(evt, this, film, Object.assign({}, film, {

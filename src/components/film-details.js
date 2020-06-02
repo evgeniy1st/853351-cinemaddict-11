@@ -1,6 +1,7 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 
 const createFilmDetails = (obj) => {
+  const checkedAtr = `checked`;
   return (
     `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -68,13 +69,13 @@ const createFilmDetails = (obj) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${obj.isWatchlist ? checkedAtr : ``}>
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${obj.isHistory ? checkedAtr : ``}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${obj.isFavorite ? checkedAtr : ``}>
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
@@ -128,26 +129,41 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._film = obj;
     this._submitHandler = null;
 
-    this._subscribeOnEvents();
+    // this._subscribeOnEvents();
   }
 
   getTemplate() {
     return createFilmDetails(this._film);
   }
 
-  recoveryListeners() {
-    this.setSubmitHandler(this._submitHandler);
-    this._subscribeOnEvents();
+  setWatchlistButtonClickHandler(handler) {
+    this.getElement().querySelector(`#watchlist`)
+      .addEventListener(`click`, handler);
   }
 
-  rerender() {
-    super.rerender();
+  setHistoryButtonClickHandler(handler) {
+    this.getElement().querySelector(`#watched`)
+      .addEventListener(`click`, handler);
   }
 
-  setSubmitHandler(handler) {
-    this.getElement().querySelector(`form`)
-      .addEventListener(`submit`, handler);
-
-    this._submitHandler = handler;
+  setFavoritesButtonClickHandler(handler) {
+    this.getElement().querySelector(`#favorite`)
+      .addEventListener(`click`, handler);
   }
+
+  // recoveryListeners() {
+  //   this.setSubmitHandler(this._submitHandler);
+  //   this._subscribeOnEvents();
+  // }
+
+  // rerender() {
+  //   super.rerender();
+  // }
+
+  // setSubmitHandler(handler) {
+  //   this.getElement().querySelector(`form`)
+  //     .addEventListener(`submit`, handler);
+
+  //   this._submitHandler = handler;
+  // }
 }
